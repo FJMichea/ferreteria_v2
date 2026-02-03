@@ -66,6 +66,11 @@ DATABASES = {
         'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'password_secreto'),
         'HOST': os.environ.get('DB_HOST', 'localhost'),
         'PORT': '5432',
+        if os.getenv('GITHUB_ACTIONS') == 'true':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
