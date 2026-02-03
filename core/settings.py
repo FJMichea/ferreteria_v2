@@ -5,7 +5,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-clave-para-entrevista-lms'
 DEBUG = True
 
-# IMPORTANTE: Permitir acceso desde cualquier lugar (para desarrollo)
+
 ALLOWED_HOSTS = ["*"]
 
 INSTALLED_APPS = [
@@ -18,7 +18,7 @@ INSTALLED_APPS = [
     
     # Apps de terceros
     'rest_framework',
-    'corsheaders',  # <--- NUEVO: Para permitir conexión con Frontend
+    'corsheaders',  
 
     # Apps locales
     'inventario',
@@ -27,7 +27,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'corsheaders.middleware.CorsMiddleware', # <--- NUEVO: Debe ir lo más arriba posible
+    'corsheaders.middleware.CorsMiddleware', 
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
@@ -35,7 +35,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
-# CONFIGURACIÓN CORS (Permite que el Frontend lea la API)
+
 CORS_ALLOW_ALL_ORIGINS = True 
 
 ROOT_URLCONF = 'core.urls'
@@ -66,13 +66,16 @@ DATABASES = {
         'PASSWORD': os.environ.get('POSTGRES_PASSWORD', 'password_secreto'),
         'HOST': os.environ.get('DB_HOST', 'localhost'),
         'PORT': '5432',
-        if os.getenv('GITHUB_ACTIONS') == 'true':
+    }
+}
+
+if os.getenv('GITHUB_ACTIONS') == 'true':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
             'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
-}
 
 AUTH_PASSWORD_VALIDATORS = [
     { 'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator', },
