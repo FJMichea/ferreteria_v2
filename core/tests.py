@@ -2,7 +2,7 @@ import pytest
 from django.urls import reverse
 from rest_framework.test import APIClient
 from rest_framework import status
-from .models import Categoria, Producto
+from inventario.models import Categoria, Producto
 
 # --- CONFIGURACIÓN ---
 # Esto permite que los tests accedan a la base de datos simulada
