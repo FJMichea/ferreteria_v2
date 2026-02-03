@@ -28,7 +28,7 @@ jobs:
 
     - name: Correr Pruebas (Pytest)
       env:
-        DJANGO_SETTINGS_MODULE: ferreteria_v2.settings
+        DJANGO_SETTINGS_MODULE: core.settings
         SECRET_KEY: 'django-insecure-test-key-para-ci'
       run: |
         pytest
