@@ -1,3 +1,4 @@
+[![CI/CD Ferretería V2](https://github.com/FJMichea/ferreteria_v2/actions/workflows/main.yml/badge.svg)](https://github.com/FJMichea/ferreteria_v2/actions/workflows/main.yml)
 # Sistema de Gestión de Inventario (API REST)
 
 Backend robusto desarrollado para la gestión de inventario de "Ferretería Quilpuecito". Este proyecto implementa una arquitectura moderna orientada a microservicios utilizando contenedores.
