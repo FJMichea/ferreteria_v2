@@ -3,10 +3,12 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-clave-para-entrevista-lms'
-DEBUG = True
-
-
-ALLOWED_HOSTS = ["*"]
+if os.environ.get('RENDER'):
+    DEBUG = False
+    ALLOWED_HOSTS = ['*'] 
+else:
+    DEBUG = True
+    ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
