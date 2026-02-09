@@ -2,11 +2,16 @@ from django.contrib import admin
 from django.urls import path, include
 from django.shortcuts import redirect
 from rest_framework.routers import DefaultRouter
+
+from rest_framework_simplejwt.views import (
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 from inventario.views import (
     ProductViewSet, 
     CategoriaViewSet, 
     DashboardStatsView, 
-    ReporteViewSet 
+    ReporteViewSet
 )
 
 def root_redirect(request):
@@ -21,5 +26,11 @@ urlpatterns = [
     path('', root_redirect, name='root'),
     path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
+    
+    
+    path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    
+    
     path('api/dashboard-stats/', DashboardStatsView.as_view(), name='dashboard-stats'),
 ]
