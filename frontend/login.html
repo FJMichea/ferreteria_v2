@@ -3,65 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acceso ERP Ferretería</title>
+    <title>Acceso Seguro | Ferretería Michea ERP</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
     <style>
-        body {
-            background: linear-gradient(120deg, #2980b9, #8e44ad);
-            height: 100vh;
+        body { height: 100vh; overflow: hidden; margin: 0; }
+        
+        
+        .bg-image {
+            background-image: url('https://images.unsplash.com/photo-1581783342308-f792ca11dfdd?q=80&w=1920&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+        }
+        
+        
+        .login-section {
             display: flex;
             align-items: center;
             justify-content: center;
+            background-color: #ffffff;
         }
-        .login-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        
+        .card-login {
             width: 100%;
-            max-width: 400px;
+            max-width: 420px;
+            padding: 3rem;
         }
-        .brand-logo {
-            font-size: 3rem;
-            text-align: center;
-            margin-bottom: 1rem;
+        
+        .btn-brand {
+            background-color: #2c3e50;
+            color: white;
+            padding: 12px;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        .btn-brand:hover { 
+            background-color: #34495e; 
+            transform: translateY(-2px); 
+            box-shadow: 0 5px 15px rgba(44, 62, 80, 0.3);
         }
     </style>
 </head>
-<body>
+<body class="row m-0">
 
-    <div class="login-card">
-        <div class="brand-logo">🛠️</div>
-        <h3 class="text-center mb-4">Ferretería Quilpuecito</h3>
-        <p class="text-center text-muted mb-4">Ingreso al Sistema</p>
+    <div class="col-lg-7 d-none d-lg-block bg-image">
+        <div class="d-flex h-100 flex-column justify-content-end p-5 text-white" style="background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);">
+            <h1 class="fw-bold display-4">Gestión Inteligente</h1>
+            <p class="fs-4">Plataforma ERP impulsada por Data Analytics.</p>
+        </div>
+    </div>
 
-        <form id="loginForm">
-            <div class="mb-3">
-                <label class="form-label">Usuario</label>
-                <input type="text" class="form-control" id="username" required placeholder="Ej: admin">
+    <div class="col-lg-5 login-section">
+        <div class="card-login">
+            <div class="text-center mb-5">
+                <i class="fas fa-hammer fa-3x text-primary mb-3"></i>
+                <h2 class="fw-bold text-dark">Bienvenido</h2>
+                <p class="text-muted">Ingresa tus credenciales para continuar</p>
             </div>
-            <div class="mb-3">
-                <label class="form-label">Contraseña</label>
-                <input type="password" class="form-control" id="password" required placeholder="••••••">
+
+            <form id="loginForm">
+                <div class="form-floating mb-3">
+                    <input type="text" class="form-control" id="username" placeholder="Usuario" required>
+                    <label>Usuario</label>
+                </div>
+                <div class="form-floating mb-4">
+                    <input type="password" class="form-control" id="password" placeholder="Contraseña" required>
+                    <label>Contraseña</label>
+                </div>
+                
+                <button type="submit" class="btn btn-brand w-100 mb-3" id="btnLogin">
+                    <span id="btnText">Iniciar Sesión</span>
+                    <span id="btnSpinner" class="spinner-border spinner-border-sm d-none"></span>
+                </button>
+                
+                <div id="error-msg" class="alert alert-danger d-none text-center small mt-3"></div>
+            </form>
+            
+            <div class="text-center mt-5 text-muted small">
+                &copy; 2026 Francisco Michea | Sistema v2.0
             </div>
-            <div class="d-grid">
-                <button type="submit" class="btn btn-primary">Ingresar</button>
-            </div>
-            <div id="error-msg" class="alert alert-danger mt-3 d-none text-center">
-                Usuario o clave incorrectos
-            </div>
-        </form>
+        </div>
     </div>
 
     <script>
-        const API_URL = 'http://localhost:8000/api/token/';
+        // CONEXIÓN A TU BACKEND EN RENDER
+        const API_URL = 'https://api-ferreteria-michea.onrender.com/api/token/';
 
         document.getElementById('loginForm').addEventListener('submit', async (e) => {
             e.preventDefault();
             
+            // Efectos visuales de carga
+            const btn = document.getElementById('btnLogin');
+            const spinner = document.getElementById('btnSpinner');
+            const btnText = document.getElementById('btnText');
+            const errorMsg = document.getElementById('error-msg');
+            
+            btn.disabled = true;
+            spinner.classList.remove('d-none');
+            btnText.textContent = " Verificando...";
+            errorMsg.classList.add('d-none');
+
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
-            const errorMsg = document.getElementById('error-msg');
 
             try {
                 const response = await fetch(API_URL, {
@@ -73,22 +118,22 @@
                 const data = await response.json();
 
                 if (response.ok) {
-                    // ¡ÉXITO! Guardamos la "llave" (Token) en el navegador
+                    
                     localStorage.setItem('accessToken', data.access);
                     localStorage.setItem('refreshToken', data.refresh);
-                    localStorage.setItem('username', username); // Guardamos el nombre para saludar
-
-                    // Redirigir al Dashboard principal
+                    localStorage.setItem('username', username);
+                    
+                    
                     window.location.href = 'index.html';
                 } else {
-                    // Error: Mostrar mensaje rojo
-                    errorMsg.classList.remove('d-none');
+                    throw new Error("Credenciales incorrectas");
                 }
-
             } catch (error) {
-                console.error('Error:', error);
-                errorMsg.innerText = "Error de conexión con el servidor";
+                errorMsg.textContent = "Error: Usuario o contraseña incorrectos.";
                 errorMsg.classList.remove('d-none');
+                btn.disabled = false;
+                spinner.classList.add('d-none');
+                btnText.textContent = "Iniciar Sesión";
             }
         });
     </script>
