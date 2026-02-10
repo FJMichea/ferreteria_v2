@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from .models import Producto, Categoria
+from .models import MovimientoStock
 
 class CategoriaSerializer(serializers.ModelSerializer):
     class Meta:
@@ -12,4 +13,11 @@ class ProductoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Producto
+        fields = '__all__'
+
+class MovimientoStockSerializer(serializers.ModelSerializer):
+    producto_nombre = serializers.ReadOnlyField(source='producto.nombre')
+    
+    class Meta:
+        model = MovimientoStock
         fields = '__all__'

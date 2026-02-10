@@ -5,6 +5,8 @@ from rest_framework.response import Response
 from django.db.models import Sum, F
 from .models import Producto, Categoria
 from .serializers import ProductoSerializer, CategoriaSerializer
+from .models import MovimientoStock
+from .serializers import MovimientoStockSerializer
 
 class ProductViewSet(viewsets.ModelViewSet):
     queryset = Producto.objects.all()
@@ -47,7 +49,7 @@ class ReporteViewSet(viewsets.ViewSet):
 
             if df.empty:
                 return Response({"mensaje": "No hay suficientes datos para analizar"})
-
+            
             df['precio'] = df['precio'].astype(float)
             df['stock'] = df['stock'].astype(int)
 
@@ -74,3 +76,15 @@ class ReporteViewSet(viewsets.ViewSet):
 
         except Exception as e:
             return Response({"error": str(e)}, status=500)
+
+
+class MovimientoStockViewSet(viewsets.ModelViewSet):
+    queryset = MovimientoStock.objects.all().order_by('-fecha')
+    serializer_class = MovimientoStockSerializer
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        producto_id = self.request.query_params.get('producto_id')
+        if producto_id:
+            queryset = queryset.filter(producto_id=producto_id)
+        return queryset
