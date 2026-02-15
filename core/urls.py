@@ -1,8 +1,12 @@
+"""
+Configuración de URLs para el proyecto.
+Incluye rutas para la API, administración y autenticación JWT.
+"""
 from django.contrib import admin
 from django.urls import path, include
 from django.shortcuts import redirect
 from rest_framework.routers import DefaultRouter
-from rest_framework_simplejwt.views import (
+from rest_framework_simplejwt.views import (  # type: ignore # pylint: disable=import-error
     TokenObtainPairView,
     TokenRefreshView,
 )
