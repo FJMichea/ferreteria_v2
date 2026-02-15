@@ -1,4 +1,6 @@
 import pandas as pd
+from django.contrib.auth.models import User
+from rest_framework.permissions import AllowAny
 from rest_framework import viewsets
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -129,7 +131,7 @@ class ReporteViewSet(viewsets.ViewSet):
 
 
 class MovimientoStockViewSet(viewsets.ModelViewSet):
-    queryset = MovimientoStock.objects.all().order_by('-fecha')
+    queryset = MovimientoStockovimientoStock.objects.all().order_by('-fecha')
     serializer_class = MovimientoStockSerializer
 
     def get_queryset(self):
@@ -138,3 +140,20 @@ class MovimientoStockViewSet(viewsets.ModelViewSet):
         if producto_id:
             queryset = queryset.filter(producto_id=producto_id)
         return queryset
+
+
+class CrearUsuarioView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        username = request.data.get('username')
+        password = request.data.get('password')
+
+        if not username or not password:
+            return Response({'error': 'Faltan datos'}, status=400)
+
+        if User.objects.filter(username=username).exists():
+            return Response({'error': 'El usuario ya existe'}, status=400)
+
+        User.objects.create_user(username=username, password=password)
+        return Response({'mensaje': 'Usuario creado con éxito'}, status=201)
