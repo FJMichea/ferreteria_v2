@@ -1,3 +1,7 @@
+"""
+Módulo que define los modelos de datos para el sistema de inventario.
+Incluye modelos para Categoría, Producto y MovimientoStock.
+"""
 from __future__ import annotations
 
 from django.db import models
@@ -5,6 +9,9 @@ from django.utils import timezone
 
 
 class Categoria(models.Model):
+    """
+    Modelo para agrupar productos bajo una categoría específica.
+    """
     nombre = models.CharField(max_length=100, unique=True)
     descripcion = models.TextField(blank=True, null=True)
 
@@ -13,6 +20,9 @@ class Categoria(models.Model):
 
 
 class Producto(models.Model):
+    """
+    Modelo que representa un artículo o producto en el inventario.
+    """
     sku = models.CharField(max_length=20, unique=True,
                            verbose_name="Código SKU")
     nombre = models.CharField(max_length=150)
@@ -31,6 +41,9 @@ class Producto(models.Model):
 
 
 class MovimientoStock(models.Model):
+    """
+    Modelo para registrar el historial de movimientos (entradas/salidas) de stock.
+    """
     TIPOS = (
         ('ENTRADA', 'Entrada (Compra/Devolución)'),
         ('SALIDA', 'Salida (Venta/Merma)'),

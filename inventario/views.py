@@ -1,28 +1,49 @@
+"""
+Módulo de vistas para la gestión de inventario.
+Incluye endpoints para productos, categorías, dashboard y reportes analíticos.
+"""
+from datetime import timedelta
 import pandas as pd
 from django.contrib.auth.models import User
-from rest_framework.permissions import AllowAny
-from rest_framework import viewsets
-from rest_framework.views import APIView
-from rest_framework.response import Response
 from django.db.models import Sum, F
 from django.utils import timezone
-from datetime import timedelta
+from rest_framework import viewsets
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from rest_framework.views import APIView
 from .models import Producto, Categoria, MovimientoStock
-from .serializers import ProductoSerializer, CategoriaSerializer
+from .serializers import (
+    ProductoSerializer, CategoriaSerializer, MovimientoStockSerializer
+)
+
+# pylint: disable=no-member
 
 
 class ProductViewSet(viewsets.ModelViewSet):
+    """
+    Vista para listar, crear, actualizar y eliminar productos.
+    """
     queryset = Producto.objects.all()
     serializer_class = ProductoSerializer
 
 
 class CategoriaViewSet(viewsets.ModelViewSet):
+    """
+    Vista para gestionar categorías de productos.
+    """
     queryset = Categoria.objects.all()
     serializer_class = CategoriaSerializer
 
 
 class DashboardStatsView(APIView):
-    def get(self, request):
+    """
+    Vista para obtener estadísticas generales del dashboard.
+    """
+
+    def get(self, _request):
+        """
+        Retorna KPIs principales: valor inventario, stock crítico, etc.
+        """
         total_valor = Producto.objects.aggregate(
             total=Sum(F('precio') * F('stock'))
         )['total'] or 0
@@ -48,14 +69,20 @@ class DashboardStatsView(APIView):
 
 
 class ReporteViewSet(viewsets.ViewSet):
-    def list(self, request):
-        try:
+    """
+    Vista para generar reportes analíticos usando Pandas.
+    """
 
+    def list(self, _request):
+        """
+        Genera un reporte completo con análisis de rotación y stock.
+        """
+        try:
             qs_productos = Producto.objects.all().values(
                 'id', 'sku', 'categoria__nombre', 'precio', 'stock', 'nombre')
             df_prod = pd.DataFrame(list(qs_productos))
 
-            if df.empty if 'df' in locals() else df_prod.empty:  # Validación de seguridad
+            if df_prod.empty:  # Validación de seguridad
                 return Response({"mensaje": "No hay suficientes datos para analizar"})
 
             df_prod['precio'] = df_prod['precio'].astype(float)
@@ -79,8 +106,9 @@ class ReporteViewSet(viewsets.ViewSet):
 
                 df_analisis = pd.merge(
                     df_prod, ventas_por_producto, left_on='id', right_on='producto_id', how='left')
+                # Rellenar con 0 los que no tienen ventas
                 df_analisis['unidades_vendidas'] = df_analisis['unidades_vendidas'].fillna(
-                    0)  # Rellenar con 0 los que no tienen ventas
+                    0)
             else:
 
                 df_prod['unidades_vendidas'] = 0
@@ -105,13 +133,17 @@ class ReporteViewSet(viewsets.ViewSet):
             analisis_categoria = df_analisis.groupby('categoria__nombre')[
                 ['valor_total', 'stock']].sum().reset_index()
 
+            prod_mas_caro = "N/A"
+            if not df_analisis.empty:
+                prod_mas_caro = df_analisis.loc[df_analisis['precio'].idxmax(
+                )]['nombre']
+
             estadisticas = {
                 "precio_promedio": round(df_analisis['precio'].mean(), 2),
                 "precio_maximo": df_analisis['precio'].max(),
                 "stock_total": int(df_analisis['stock'].sum()),
                 "valor_inventario_total": int(df_analisis['valor_total'].sum()),
-                "producto_mas_caro": df_analisis.loc[df_analisis['precio'].idxmax()]['nombre'] if not df_analisis.empty else "N/A",
-
+                "producto_mas_caro": prod_mas_caro,
 
                 "tasa_rotacion_30d": float(tasa_rotacion),
                 "capital_inmovilizado": int(valor_inmovilizado),
@@ -125,16 +157,22 @@ class ReporteViewSet(viewsets.ViewSet):
                 "valor_por_categoria": analisis_categoria.to_dict(orient='records')
             })
 
-        except Exception as e:
+        except Exception as e:  # pylint: disable=broad-exception-caught
             print(f"Error en Pandas: {str(e)}")
             return Response({"error": str(e)}, status=500)
 
 
 class MovimientoStockViewSet(viewsets.ModelViewSet):
-    queryset = MovimientoStockovimientoStock.objects.all().order_by('-fecha')
+    """
+    Vista para listar y crear movimientos de stock (entradas/salidas).
+    """
+    queryset = MovimientoStock.objects.all().order_by('-fecha')
     serializer_class = MovimientoStockSerializer
 
     def get_queryset(self):
+        """
+        Permite filtrar movimientos por producto_id.
+        """
         queryset = super().get_queryset()
         producto_id = self.request.query_params.get('producto_id')
         if producto_id:
@@ -143,9 +181,15 @@ class MovimientoStockViewSet(viewsets.ModelViewSet):
 
 
 class CrearUsuarioView(APIView):
+    """
+    Vista pública para registrar nuevos usuarios.
+    """
     permission_classes = [AllowAny]
 
     def post(self, request):
+        """
+        Crea un usuario si no existe.
+        """
         username = request.data.get('username')
         password = request.data.get('password')
 
