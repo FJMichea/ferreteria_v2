@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from django.db import models
 from django.utils import timezone
 
@@ -7,7 +9,7 @@ class Categoria(models.Model):
     descripcion = models.TextField(blank=True, null=True)
 
     def __str__(self):
-        return self.nombre
+        return str(self.nombre)
 
 
 class Producto(models.Model):
@@ -44,16 +46,17 @@ class MovimientoStock(models.Model):
     fecha = models.DateTimeField(default=timezone.now)
 
     def save(self, *args, **kwargs):
-
         if not self.pk:
+            producto = self.producto
             if self.tipo == 'ENTRADA':
-                self.producto.stock += self.cantidad
+                producto.stock += self.cantidad  # pylint: disable=no-member
             elif self.tipo == 'SALIDA':
-                self.producto.stock -= self.cantidad
+                producto.stock -= self.cantidad  # pylint: disable=no-member
 
-            self.producto.save()
+            producto.save()  # pylint: disable=no-member
 
         super().save(*args, **kwargs)
 
-    def __str__(self):
-        return f"{self.tipo} de {self.cantidad} - {self.producto.nombre}"
+    def __str__(self) -> str:
+        producto = self.producto
+        return f"{self.tipo} de {self.cantidad} - {producto.nombre}"  # pylint: disable=no-member
