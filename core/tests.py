@@ -1,18 +1,28 @@
-import pytest
+"""
+Módulo de pruebas para la aplicación core usando Pytest.
+"""
+import pytest  # type: ignore # pylint: disable=import-error
 from django.urls import reverse
 from rest_framework.test import APIClient
 from rest_framework import status
 from inventario.models import Categoria, Producto
 
+# pylint: disable=no-member
+
 # --- CONFIGURACIÓN ---
 # Esto permite que los tests accedan a la base de datos simulada
-@pytest.mark.django_db
 
+
+@pytest.mark.django_db
 class TestInventario:
-    
+    """
+    Suite de pruebas para verificar modelos y endpoints básicos.
+    """
+
     def test_crear_categoria(self):
         """Verifica que se puede crear una categoría en la BD"""
-        cat = Categoria.objects.create(nombre="Electricidad", descripcion="Cables y enchufes")
+        cat = Categoria.objects.create(
+            nombre="Electricidad", descripcion="Cables y enchufes")
         assert cat.nombre == "Electricidad"
         assert Categoria.objects.count() == 1
 
@@ -24,10 +34,10 @@ class TestInventario:
         cat = Categoria.objects.create(nombre="Test")
         # Aquí simulamos una creación simple
         prod = Producto.objects.create(
-            sku="TEST-001", 
-            nombre="Prod Test", 
-            categoria=cat, 
-            precio=1000, 
+            sku="TEST-001",
+            nombre="Prod Test",
+            categoria=cat,
+            precio=1000,
             stock=10
         )
         assert prod.stock >= 0
@@ -35,13 +45,7 @@ class TestInventario:
     def test_api_dashboard_status(self):
         """Verifica que el dashboard responde correctamente"""
         client = APIClient()
-        # Intentamos consultar una URL común. Si cambiaste la URL, ajusta esto.
-        # Si usas reverse, sería ideal: url = reverse('dashboard-stats')
-        # Por ahora probamos la raíz o una url probable:
-        try:
-            # Reemplaza '/api/dashboard/' por la ruta real que pusiste en urls.py
-            response = client.get('/api/dashboard/') 
-            # Si la ruta no existe, devolverá 404, pero validamos que el servidor corra
-            assert response.status_code in [200, 404] 
-        except Exception:
-            pass
+        # Usamos reverse para obtener la URL correcta definida en urls.py
+        url = reverse('dashboard-stats')
+        response = client.get(url)
+        assert response.status_code == status.HTTP_200_OK
