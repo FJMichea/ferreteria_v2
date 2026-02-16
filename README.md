@@ -13,8 +13,9 @@ El sistema se encuentra desplegado en la nube utilizando los servidores de Rende
 
 ### 🔐 Credenciales de Acceso (Entorno Demo)
 Para evaluar las funcionalidades del sistema o acceder al Panel de Administración, utilice las siguientes credenciales:
-* **Administrador (Acceso Total):** Usuario: `admin` | Contraseña: `admin123_ferreteria`
-* **Vendedor (Acceso Restringido):** Usuario: `vendedor1` | Contraseña: `12345`
+* **Administrador (Acceso Total):** Usuario: `admin` | Contraseña: `12345`
+* **Vendedor (Acceso Restringido):** Usuario: `vendedor1` 
+| Contraseña: `vendedor_ferreteria123`
 > *Nota: En un entorno de producción corporativo real, las contraseñas se almacenan con hashing criptográfico (PBKDF2) en PostgreSQL.*
 
 ## 🚀 Stack Tecnológico y Arquitectura
