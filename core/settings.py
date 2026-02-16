@@ -1,9 +1,13 @@
+"""
+Configuración de Django para el proyecto .
+Define rutas, middleware, aplicaciones instaladas y conexión a base de datos.
+"""
 import os
 from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-clave-para-entrevista-lms'
-DEBUG = False
+DEBUG = True
 ALLOWED_HOSTS = ['api-ferreteria-michea.onrender.com',
                  'localhost', '127.0.0.1']
 
