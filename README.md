@@ -1,40 +1,56 @@
 [![CI/CD Ferretería V2](https://github.com/FJMichea/ferreteria_v2/actions/workflows/main.yml/badge.svg)](https://github.com/FJMichea/ferreteria_v2/actions/workflows/main.yml)
-# Sistema de Gestión de Inventario (API REST)
 
-Backend robusto desarrollado para la gestión de inventario de "Ferretería Quilpuecito". Este proyecto implementa una arquitectura moderna orientada a microservicios utilizando contenedores.
+# ⚙️ ERP Ferretería Quilpuecito - Backend API (Django REST)
 
-## 🚀 Tecnologías
+¡Bienvenido al núcleo de nuestro ERP! Este repositorio contiene el Backend robusto y escalable desarrollado para el Sistema de Gestión y Control de Inventarios de la Ferretería. 
 
-* **Lenguaje:** Python 3.12
-* **Framework:** Django 6.0 + Django REST Framework
-* **Base de Datos:** PostgreSQL 15
-* **Infraestructura:** Docker & Docker Compose
+Construido sobre una arquitectura API RESTful y preparado para entornos en contenedores (Docker), este sistema permite un desacoplamiento total del Frontend, garantizando seguridad, integridad de datos y alta disponibilidad.
 
-## 🛠️ Instalación y Uso
+## 🌐 Entorno de Producción (Live Demo)
+El sistema se encuentra desplegado en la nube utilizando los servidores de Render.
+* **API REST base:** [https://api-ferreteria-michea.onrender.com/api/]
+* **Panel de Administración Segura (PostgreSQL GUI):** [https://api-ferreteria-michea.onrender.com/admin/]
 
-Este proyecto está dockerizado, por lo que no necesitas instalar Python ni PostgreSQL localmente.
+### 🔐 Credenciales de Acceso (Entorno Demo)
+Para evaluar las funcionalidades del sistema o acceder al Panel de Administración, utilice las siguientes credenciales:
+* **Administrador (Acceso Total):** Usuario: `admin` | Contraseña: `admin123_ferreteria`
+* **Vendedor (Acceso Restringido):** Usuario: `vendedor1` | Contraseña: `12345`
+> *Nota: En un entorno de producción corporativo real, las contraseñas se almacenan con hashing criptográfico (PBKDF2) en PostgreSQL.*
 
-1.  **Clonar el repositorio:**
-    ```bash
-    git clone https://github.com/FJMichea/ferreteria-backend-lms.git
-    cd ferreteria-backend-lms
-    ```
+## 🚀 Stack Tecnológico y Arquitectura
+* **Core:** Python 3.12
+* **Framework Web:** Django 6.0 + Django REST Framework (DRF)
+* **Inteligencia de Negocios:** Pandas (Motor analítico para KPIs)
+* **Base de Datos:** PostgreSQL 15 (Modelado estricto con integridad referencial)
+* **Seguridad:** Simple JWT (JSON Web Tokens para autenticación sin estado)
+* **Infraestructura:** Docker, Docker Compose y GitHub Actions (CI/CD)
 
-2.  **Iniciar el proyecto:**
-    ```bash
-    docker-compose up --build
-    ```
+## 🔐 Características Destacadas (Fase 1)
+* **API RESTful Completa:** Endpoints CRUD optimizados con serialización JSON.
+* **Prevención de Quiebre de Stock:** Lógica transaccional a nivel de servidor que impide salidas físicas superiores al stock disponible.
+* **Trazabilidad Continua:** Registro inalterable de auditoría (Kardex) para cada movimiento.
+* **Dashboard BI (`/api/reporte-bi/`):** Algoritmos de análisis que procesan en tiempo real el valor del inventario, capital inmovilizado y tasa de rotación.
 
-3.  **Acceder a la API:**
-    * El servidor estará corriendo en: `http://localhost:8000`
-    * Endpoint de productos: `http://localhost:8000/api/productos/`
-    * Endpoint de categorías: `http://localhost:8000/api/categorias/`
+## 🛠️ Instalación y Entorno de Desarrollo (Local)
+Para desarrollo y pruebas locales, el proyecto está dockerizado para replicación exacta del entorno:
 
-## 📋 Características Técnicas
+1. **Clonar el repositorio:**
+   ```bash
+   git clone [https://github.com/FJMichea/ferreteria_v2.git](https://github.com/FJMichea/ferreteria_v2.git)
+   cd ferreteria_v2
 
-* **API RESTful:** Endpoints CRUD completos con serialización JSON.
-* **Base de Datos Relacional:** Modelado estricto con integridad referencial (Foreign Keys).
-* **Entorno Aislado:** Configuración completa en `docker-compose.yml` para replicación exacta en cualquier entorno de desarrollo.
+Levantar los contenedores (Servidor + DB):
+docker-compose up --build
 
----
-**Desarrollado por:** Francisco Javier Michea Acuña
+Acceso local: La API estará disponible en http://localhost:8000/api/
+
+Roadmap y Futuras Mejoras
+La arquitectura micro-orientada está lista para integrar:
+
+Machine Learning & Predicción de Demanda (Scikit-Learn).
+
+Integración Webhooks Facturación Electrónica (SII Chile).
+
+Soporte API para App Móvil de Bodegueros.
+
+**Desarrollado por:** Francisco Michea
